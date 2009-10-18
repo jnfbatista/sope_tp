@@ -3,7 +3,7 @@
 #include <signal.h>
 #include <string.h>
 
-#include <commands.h>
+#include "commands.h"
 
 /**
  * @param Signal to be handled

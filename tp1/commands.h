@@ -15,7 +15,7 @@ int ajuda();
 
 int localiza(char* cmd);
 
-int exit();
+int sair();
 
 #endif
 
