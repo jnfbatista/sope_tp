@@ -15,9 +15,11 @@ int ver(char* version) {
 }
 
 int ajuda() {
+	
 	return 0;
 }
 int localiza(char* cmd) {
+	int i = 0;
 	return 0;
 }
 

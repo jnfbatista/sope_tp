@@ -58,9 +58,9 @@ int process_commands(char* user, char* envp[]) {
 		}
 	} else if(strcmp(cmd,"localiza")){
 
-	} else if (strcomp(cmd,"psu")) {
+	} else if (strcmp(cmd,"psu")) {
 	
-	} else if (strcomp(cmd,"ajuda")) {
+	} else if (strcmp(cmd,"ajuda")) {
 	
 	} else {
 		printf("Comando não reconhecido\n");
