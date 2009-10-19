@@ -1,6 +1,7 @@
 #include "commands.h"
 
-int quem() {
+int quem(char* envp[]) {
+	execlp("who", (char*)NULL);
 	return 0;
 }
 
@@ -8,7 +9,8 @@ int psu() {
 	return 0;
 }
 
-int ver() {
+int ver(char* version) {
+	printf("sosh: Versão %s\n", version);
 	return 0;
 }
 
