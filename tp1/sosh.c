@@ -52,13 +52,17 @@ int process_commands(char* user, char* envp[]) {
 		pid = fork();
 		//Pai
 		if (pid == 0) {
-			wait();
-		} else {
 			quem(envp);
-			break; //ou exit(0)
+		} else {
+			wait(&pid);
 		}
-	}
-	else {
+	} else if(strcmp(cmd,"localiza")){
+
+	} else if (strcomp(cmd,"psu")) {
+	
+	} else if (strcomp(cmd,"ajuda")) {
+	
+	} else {
 		printf("Comando não reconhecido\n");
 	}
 }
