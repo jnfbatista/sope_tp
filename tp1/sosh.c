@@ -7,8 +7,12 @@
 
 #define VERSION "0.2"
 
+int process_commands(char* user, char* envp[]); 
+
+char* process_args(char * args);
 /**
- * @param Signal to be handled
+ *
+ * @param sig Sinal a ser tratado por esta função
  */
 void handler(int sig) {
 	char c[32];
@@ -30,7 +34,6 @@ int main(int argc, char * argv[], char* envp[]) {
 	char* user;
 
 	user = getenv("USER");
-
 	signal(SIGINT, handler);
 
 	while(1) {
@@ -41,28 +44,41 @@ int main(int argc, char * argv[], char* envp[]) {
 }
 
 int process_commands(char* user, char* envp[]) {
-	char cmd[128];
-	int pid;
+	char cmd[MAX_INPUT];
+	const char* tokens = " \n\r";
+	char *res[50];
+	int i =0, j = 0;
+	
 	printf("%s: ", user);
-	scanf("%s", cmd);
+	fgets( cmd, MAX_INPUT, stdin);
 
-	if(strcmp(cmd, "ver") == 0 ) {
+	// Processes
+	res[i] = strtok(cmd, " ");
+	i++;
+	while( (res[i] = strtok(NULL, tokens)) != NULL){
+		i++;
+	}
+
+	while(res[j] != NULL) {
+		printf("%s\n", res[j]);
+		j++;
+	}
+
+	if(strcmp(res[0], "ver") == 0 ) {
 		ver(VERSION);
-	} else if (strcmp(cmd, "quem")==0) {
-		pid = fork();
-		//Pai
-		if (pid == 0) {
-			quem(envp);
-		} else {
-			wait(&pid);
-		}
-	} else if(strcmp(cmd,"localiza")){
-
-	} else if (strcmp(cmd,"psu")) {
-	
-	} else if (strcmp(cmd,"ajuda")) {
-	
+	} else if (strcmp(res[0], "quem") == 0) {
+		quem();
+	} else if(strcmp(res[0],"localiza") == 0){
+		localiza(res);
+	} else if (strcmp(res[0],"psu") == 0) {
+		psu();	
+	} else if (strcmp(res[0],"ajuda") == 0) {
+		ajuda();
+	} else if (strcmp(res[0],"sair") == 0) {
+		sair();
 	} else {
 		printf("Comando não reconhecido\n");
 	}
+	return 0;
 }
+
