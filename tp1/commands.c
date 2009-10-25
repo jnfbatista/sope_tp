@@ -21,6 +21,7 @@ int psu() {
 	char* cmd_w_args = "u";
 
 	if (p == 0) {
+		signal(SIGINT, SIG_DFL);
 		if((result = execlp(cmd, cmd, cmd_w_args, (const char*)NULL))== -1) {
 			perror("execlp");
 			exit(1);
@@ -67,38 +68,20 @@ int localiza(char* cmd[]) {
 	int pid = fork();
 	//Pai
 	if (pid == 0) {
+		signal(SIGINT, SIG_DFL);
 		get_dirs("", cmd[1], "");
+		exit(0);
 	} else {
 		wait(&pid);
 	} 
 	return 0;
 
-	//opens the directory
-	if((caminho = opendir(root)) == NULL) {
-		perror("opendir");
-		return 1;
-	} else {
-
-		while((dir = readdir(caminho)) != NULL) {
-			if(strcmp(dir->d_name, ".") == 0)
-				continue; //do nothing
-			else if(strcmp(dir->d_name, "..") == 0)
-				continue; //do nothing
-			else if(dir->d_type == DT_DIR)
-				get_dirs((char*)&dir->d_name, tmp, root);
-		}
-
-		closedir(caminho);
-	}
-
-	return 0;
 }
 
 /**
  * Trata da recursividade da busca nos directórios
  */
 void get_dirs(char* olddir, char* expr, char* path) {
-	char* dirs;
 	char actual_path[MAX_PATH];
 	DIR* caminho;
 	struct dirent* dir;

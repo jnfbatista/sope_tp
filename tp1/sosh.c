@@ -52,15 +52,15 @@ int process_commands(char* user, char* envp[]) {
 	printf("%s: ", user);
 	fgets( cmd, MAX_INPUT, stdin);
 
-	// Processes
-	res[i] = strtok(cmd, " ");
+	// Processes the intput
+	res[i] = strtok(cmd, tokens); 
 	i++;
 	while( (res[i] = strtok(NULL, tokens)) != NULL){
 		i++;
 	}
 
 	while(res[j] != NULL) {
-		printf("%s\n", res[j]);
+		printf("%d: %s\n",j, res[j]);
 		j++;
 	}
 
