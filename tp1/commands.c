@@ -24,7 +24,7 @@ int psu() {
 		signal(SIGINT, SIG_DFL);
 		if((result = execlp(cmd, cmd, cmd_w_args, (const char*)NULL))== -1) {
 			perror("execlp");
-			exit(1);
+			return -1;
 		}
 	} else {
 		wait(&p);
@@ -59,12 +59,6 @@ void sair() {
  * @param cmd expression to find in the files
  */
 int localiza(char* cmd[]) {
-	DIR* caminho;
-	struct dirent* dir;
-	char* root = "/";
-
-	char* tmp = "sh";
-
 	int pid = fork();
 	//Pai
 	if (pid == 0) {
@@ -85,6 +79,7 @@ void get_dirs(char* olddir, char* expr, char* path) {
 	char actual_path[MAX_PATH];
 	DIR* caminho;
 	struct dirent* dir;
+	int pid;
 
 	strcpy(actual_path, path);
 	strcat(actual_path, olddir);
@@ -104,13 +99,15 @@ void get_dirs(char* olddir, char* expr, char* path) {
 				continue; //do nothing
 			if(strcmp(dir->d_name, "..") == 0)
 				continue; //do nothing
-			if(dir->d_type == DT_DIR) {
-				get_dirs(dir->d_name, expr, actual_path);
+			if(dir->d_type == DT_DIR) { //opens other directories
+				pid = fork();
+				if(pid == 0) {
+					get_dirs(dir->d_name, expr, actual_path);
+					exit(0); //termina o processo filho
+				}
 			}
-
-
 		}
-		closedir(caminho);
+		closedir(caminho); // fecha o directório
 	}
 
 }
