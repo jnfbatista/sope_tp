@@ -5,26 +5,23 @@
 
 #include "commands.h"
 
-#define VERSION "0.2"
+#define VERSION "0.3"
 
-int process_commands(char* user, char* envp[]); 
 
-char* process_args(char * args);
 /**
+ * Handler de um sinal (a ser usado com SIGINT) para
+ * perguntar ao utilizador se deseja sair da consola
  *
  * @param sig Sinal a ser tratado por esta função
  */
-void handler(int sig) {
-	char c[32];
+void handler(int sig);
 
-	printf("\nDo you wish to exit? (y/N): ");
-	scanf("%s", c);
-	if(strcmp(c, "y" ) == 0) {
-		exit(0);
-	} else {
-		return;
-	}
-}
+/**
+ * Trata do loop principal do programa, esperando os
+ * comandos a serem executados e executando-os posteriormente
+ * @param user String com o nome do utilizador da máquina
+ */
+int process_commands(char* user); 
 
 /**
  * main function
@@ -37,48 +34,57 @@ int main(int argc, char * argv[], char* envp[]) {
 	signal(SIGINT, handler);
 
 	while(1) {
-		process_commands(user, envp);
+		process_commands(user);
 	}
 
 	return 0;
 }
 
-int process_commands(char* user, char* envp[]) {
+int process_commands(char* user) {
 	char cmd[MAX_INPUT];
 	const char* tokens = " \n\r";
 	char *res[50];
-	int i =0, j = 0;
-	
-	printf("%s: ", user);
-	fgets( cmd, MAX_INPUT, stdin);
+	int i =0;
 
-	// Processes the intput
+	printf("%s: ", user);
+	fgets( cmd, MAX_INPUT, stdin); //Espera um input de stdin
+
+	// Processa o input e separa-o num char*
 	res[i] = strtok(cmd, tokens); 
 	i++;
 	while( (res[i] = strtok(NULL, tokens)) != NULL){
 		i++;
 	}
-
-	while(res[j] != NULL) {
-		printf("%d: %s\n",j, res[j]);
-		j++;
-	}
-
+	
+	// Tenta executar o commando da shell
+	// em caso de não existir tenta correr com o execlp
 	if(strcmp(res[0], "ver") == 0 ) {
-		ver(VERSION);
+		cmd_ver(VERSION);
 	} else if (strcmp(res[0], "quem") == 0) {
-		quem();
+		cmd_quem();
 	} else if(strcmp(res[0],"localiza") == 0){
-		localiza(res);
+		cmd_localiza(res);
 	} else if (strcmp(res[0],"psu") == 0) {
-		psu();	
+		cmd_psu();	
 	} else if (strcmp(res[0],"ajuda") == 0) {
-		ajuda();
-	} else if (strcmp(res[0],"sair") == 0) {
-		sair();
+		cmd_ajuda();
+	} else if (strcmp(res[0],"exit") == 0) {
+		cmd_sair();
 	} else {
-		printf("Comando não reconhecido\n");
+		cmd_usrbin(res, i);	
 	}
 	return 0;
+}
+
+void handler(int sig) {
+	char c[32];
+
+	printf("\nDo you wish to exit? (y/N): ");
+	scanf("%s", c);
+	if(strcmp(c, "y" ) == 0) {
+		exit(0);
+	} else {
+		return;
+	}
 }
 
