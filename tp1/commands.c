@@ -74,14 +74,14 @@ int cmd_localiza(char* cmd[]) {
 	return 0;
 }
 
-void get_dirs(char* olddir, char* expr, char* path) {
+void get_dirs(char* dir, char* expr, char* path) {
 	char actual_path[MAX_PATH];
 	DIR* caminho;
-	struct dirent* dir;
+	struct dirent* file;
 
 	// Concatena as strings para passar o caminho completo a opendir()
 	strcpy(actual_path, path);
-	strcat(actual_path, olddir);
+	strcat(actual_path, dir);
 	strcat(actual_path, SEPARATOR);
 
 
@@ -90,19 +90,19 @@ void get_dirs(char* olddir, char* expr, char* path) {
 		perror(actual_path);
 	} else {
 		// Enquanto tiver ficheiros para percorrer
-		while((dir = readdir(caminho)) != NULL) {
+		while((file = readdir(caminho)) != NULL) {
 			//verifica se contem a expressao pretendida
-			if(strstr(dir->d_name, expr) != NULL) {	
-				printf("%s%s\n",actual_path, dir->d_name);
+			if(strstr(file->d_name, expr) != NULL) {	
+				printf("%s%s\n",actual_path, file->d_name);
 			}
 			// ignora os indicadores da pasta um nivel acima
 			// da própria (".." e ".")
-			if(strcmp(dir->d_name, ".") == 0)
+			if(strcmp(file->d_name, ".") == 0)
 				continue; //do nothing
-			if(strcmp(dir->d_name, "..") == 0)
+			if(strcmp(file->d_name, "..") == 0)
 				continue; //do nothing
-			if(dir->d_type == DT_DIR) { //opens other directories
-				get_dirs(dir->d_name, expr, actual_path);
+			if(file->d_type == DT_DIR) { //opens other directories
+				get_dirs(file->d_name, expr, actual_path);
 			}
 		}
 		closedir(caminho); // fecha o directório
