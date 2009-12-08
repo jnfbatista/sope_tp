@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <string.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <errno.h>
 
 #include "commands.h"
 
@@ -24,17 +28,24 @@ void handler(int sig);
 int process_commands(char* user); 
 
 /**
+ * Inicia o pipe
+ */
+void init_pipe();
+
+/**
  * main function
  */
 int main(int argc, char * argv[], char* envp[]) {
+	int ret = 0;
 
 	char* user;
+	init_pipe();
 
 	user = getenv("USER");
 	signal(SIGINT, handler);
 
-	while(1) {
-		process_commands(user);
+	while(ret == 0) {
+		ret = process_commands(user);
 	}
 
 	return 0;
@@ -45,9 +56,14 @@ int process_commands(char* user) {
 	const char* tokens = " \n\r";
 	char *res[50];
 	int i =0;
+	int pid;
 
 	printf("%s: ", user);
-	fgets( cmd, MAX_INPUT, stdin); //Espera um input de stdin
+	fgets( cmd, MAX_INPUT, stdin) == NULL);	//Espera um input de stdin
+	
+	if(strcmp(cmd,"\n") == 0){
+		return 0;
+	}
 
 	// Processa o input e separa-o num char*
 	res[i] = strtok(cmd, tokens); 
@@ -55,13 +71,28 @@ int process_commands(char* user) {
 	while( (res[i] = strtok(NULL, tokens)) != NULL){
 		i++;
 	}
-	
+
 	// Tenta executar o commando da shell
 	// em caso de não existir tenta correr com o execlp
-	if(strcmp(res[0], "ver") == 0 ) {
-		cmd_ver(VERSION);
+
+	if(strcmp(res[0], "") == 0){
+	} else if(strcmp(res[0], "ver") == 0 ) {
+		pid = fork();
+		if(pid == 0) {
+			cmd_write_pipe(res[0]);
+			return 1;
+		} else {
+			cmd_ver(VERSION);
+		}
 	} else if (strcmp(res[0], "quem") == 0) {
-		cmd_quem();
+		pid = fork();
+		if(pid == 0) {
+			cmd_quem();
+			return 1;
+		} else {
+			cmd_write_pipe(res[0]);
+
+		}
 	} else if(strcmp(res[0],"localiza") == 0){
 		cmd_localiza(res);
 	} else if (strcmp(res[0],"psu") == 0) {
@@ -88,3 +119,11 @@ void handler(int sig) {
 	}
 }
 
+void init_pipe() {
+	errno = 0;
+	if( mkfifo(PIPE, 0666) == -1 ) {
+		perror("creating fifo");
+		if(errno != EEXIST)
+			exit(1);
+	}
+}

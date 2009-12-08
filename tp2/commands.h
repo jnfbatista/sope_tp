@@ -7,9 +7,12 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <dirent.h>
+#include <sys/types.h>
+#include <fcntl.h>
 
 #define MAX_PATH 1024
 #define SEPARATOR "/"
+#define PIPE "/tmp/sosh.canal"
 
 /**
  * Executa o o commando who do UNIX
@@ -68,5 +71,12 @@ void get_dirs(char* dir, char* expr, char* path);
  * @return Retorna 0 se for executado com sucesso
  */
 int cmd_usrbin(char* argv[], int argc);
+
+/**
+ * Write the input commands to the fifo
+ */
+int cmd_write_pipe(char buffer[]);
+	
+
 #endif
 

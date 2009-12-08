@@ -125,3 +125,16 @@ int cmd_usrbin(char* argv[], int argc){
 	
 	return 0;
 }
+
+int cmd_write_pipe(char buffer[]) {
+	int fd; //inicializa o file descriptor
+
+	fd = open( PIPE, O_WRONLY);
+	if ( fd == -1) {
+		perror("Opening file");
+	}
+
+	write(fd, buffer, sizeof(buffer));
+	
+}
+

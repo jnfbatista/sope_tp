@@ -6,6 +6,9 @@ sosh: commands.o sosh.o
 sosh.o: sosh.c
 	gcc -g -c sosh.c -Wall
 
+freq: freq.o
+	gcc -o freq freq.o -Wall
+
 freq.o: freq.c
 	gcc -g -c freq.c -Wall
 
