@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <errno.h>
+#include <semaphore.h>
 
 #include "commands.h"
 
@@ -60,51 +61,49 @@ int process_commands(char* user) {
 
 	printf("%s: ", user);
 	fgets( cmd, MAX_INPUT, stdin);	//Espera um input de stdin
-	
+
 	if(strcmp(cmd,"\n") == 0){
 		return 0;
 	}
 
-	// Processa o input e separa-o num char*
-	res[i] = strtok(cmd, tokens); 
-	i++;
-	while( (res[i] = strtok(NULL, tokens)) != NULL){
+	pid = fork();
+	if (pid == 0) { //Executa o comando
+		// Processa o input e separa-o num char*
+		res[i] = strtok(cmd, tokens); 
 		i++;
-	}
+		while( (res[i] = strtok(NULL, tokens)) != NULL){
+			i++;
+		}
 
-	// Tenta executar o commando da shell
-	// em caso de não existir tenta correr com o execlp
+		// Tenta executar o commando da shell
+		// em caso de não existir tenta correr com o execlp
 
-	if(strcmp(res[0], "") == 0){
-	} else if(strcmp(res[0], "ver") == 0 ) {
-		pid = fork();
-		if(pid == 0) {
-			cmd_write_pipe(res[0]);
-			return 1;
-		} else {
+		if(strcmp(res[0], "") == 0){
+		} else if(strcmp(res[0], "ver") == 0 ) {
 			cmd_ver(VERSION);
-		}
-	} else if (strcmp(res[0], "quem") == 0) {
-		pid = fork();
-		if(pid == 0) {
+		} else if (strcmp(res[0], "quem") == 0) {
 			cmd_quem();
-			return 1;
+		} else if(strcmp(res[0],"localiza") == 0){
+			cmd_localiza(res);
+		} else if (strcmp(res[0],"psu") == 0) {
+			cmd_psu();	
+		} else if (strcmp(res[0],"ajuda") == 0) {
+			cmd_ajuda();
+		} else if (strcmp(res[0],"exit") == 0) {
+			cmd_sair();
 		} else {
-			cmd_write_pipe(res[0]);
-
+			cmd_usrbin(res, i);	
 		}
-	} else if(strcmp(res[0],"localiza") == 0){
-		cmd_localiza(res);
-	} else if (strcmp(res[0],"psu") == 0) {
-		cmd_psu();	
-	} else if (strcmp(res[0],"ajuda") == 0) {
-		cmd_ajuda();
-	} else if (strcmp(res[0],"exit") == 0) {
-		cmd_sair();
-	} else {
-		cmd_usrbin(res, i);	
+		return 1;
+
+	} else { //Escreve no fifo o comando (seja ele qual for)
+		wait(&pid);
+		cmd_write_pipe(cmd);
+		return 0;
 	}
-	return 0;
+
+
+
 }
 
 void handler(int sig) {

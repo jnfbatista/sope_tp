@@ -1,8 +1,13 @@
-/**
- * readline.c
- */
-ssize_t readline(int fd,void * vptr, size_t maxlen){
-	ssize_tn,rc;
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+#include "readline.h"
+
+ssize_t readline(int fd, void * vptr, size_t maxlen){
+
+	ssize_t n,rc;
 	char c, *ptr;
 	ptr = vptr;
 	for(n=1; n<maxlen; n++){
@@ -24,12 +29,4 @@ ssize_t readline(int fd,void * vptr, size_t maxlen){
 	return(n);
 }
 
-void example(){
-	int fp;
-	int l;
-	char buf[255];
-	fp=open(”pipe”,ORDONLY);
-	l=readline(fp,buf,244);
-	printf(”read\n\t%s\n”,buf);
-	close(fp);
-}
+
