@@ -14,6 +14,7 @@
 #define SEPARATOR "/"
 #define PIPE "/tmp/sosh.canal"
 #define CMD_PIPE "/tmp/sosh.cmd"
+#define RES_PIPE "/tmp/sosh.results"
 
 /**
  * Executa o o commando who do UNIX
@@ -78,6 +79,12 @@ int cmd_usrbin(char* argv[], int argc);
  */
 int cmd_write_pipe(char buffer[]);
 
+/**
+ *
+ */
+void send_freq_cmd(char cmd[]); 
+
+void listen_results_pipe();
 /**
  * Gets the frequency stats from freq server
  */

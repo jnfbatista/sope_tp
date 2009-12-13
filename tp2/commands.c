@@ -4,7 +4,7 @@
 int cmd_quem() {
 	int result;
 	int pid = fork();
-	
+
 	//Filho executa o comando who
 	if (pid == 0) {
 		if(execlp("who", "", (const char*)NULL) == -1) {
@@ -52,7 +52,7 @@ int cmd_ajuda() {
 	printf("psu\t\tLista os processos que lhe pertencem a correr\n");
 	printf("quem\t\tExecuta o comando \"who\"\n");
 	printf("ver\t\tIndica a versão desta shell\n");
-	
+
 	return 0;
 }
 
@@ -122,7 +122,7 @@ int cmd_usrbin(char* argv[], int argc){
 	} else {
 		wait(&pid); // processo pai espera a terminção do filho
 	}
-	
+
 	return 0;
 }
 
@@ -135,17 +135,43 @@ int cmd_write_pipe(char buffer[]) {
 	}
 
 	write(fd, buffer, sizeof(buffer)*8);
-	
+	close(fd);
+
 }
 
-void cmd_stat() {
+void send_freq_cmd(char cmd[]) {
 	int fd; //inicializa o file descriptor
+	int size = sizeof(cmd);
 
 	fd = open( CMD_PIPE, O_WRONLY);
 	if ( fd == -1) {
 		perror("Opening file");
 	}
 
-	write(fd, "stat", 4);
+	write(fd, cmd, size);
+	close(fd);
 
+}
+
+void listen_results_pipe(){
+	int fd;
+	char buffer[4];
+
+	fd = open(RES_PIPE, O_RDONLY);
+	if ( fd == -1) {
+		perror("Opening file");
+	}
+	read(fd, buffer, 4);
+	while(strcmp(buffer , "end\n") != 0) {
+		printf("%s", buffer);
+		read(fd, buffer, 4);
+
+	}
+	close(fd);	
+	return NULL;
+}
+
+void cmd_stat() {
+	send_freq_cmd("stat\n");
+	listen_results_pipe();
 }

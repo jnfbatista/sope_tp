@@ -1,7 +1,7 @@
 all: sosh freq
 
 sosh: commands.o sosh.o
-	gcc -o sosh sosh.o commands.o -Wall
+	gcc -lpthread -o  sosh_s sosh.o commands.o -Wall
 
 sosh.o: sosh.c
 	gcc -g -c sosh.c -Wall

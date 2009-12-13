@@ -34,6 +34,11 @@ int process_commands(char* user);
 void init_pipe();
 
 /**
+ * Escreve no stdout
+ */
+void* stdout_writer(void * arg); 
+
+/**
  * main function
  */
 int main(int argc, char * argv[], char* envp[]) {
@@ -41,6 +46,7 @@ int main(int argc, char * argv[], char* envp[]) {
 
 	char* user;
 	init_pipe();
+
 
 	user = getenv("USER");
 	signal(SIGINT, handler);
@@ -54,10 +60,15 @@ int main(int argc, char * argv[], char* envp[]) {
 
 int process_commands(char* user) {
 	char cmd[MAX_INPUT];
+	char buffer_c1[MAX_INPUT];
+	char buffer_c2[MAX_INPUT];
 	const char* tokens = " \n\r";
 	char *res[50];
 	int i =0;
 	int pid;
+	pthread_t ptid[2];
+
+	int pipe_fd[2];
 
 	printf("%s: ", user);
 	fgets(cmd, MAX_INPUT, stdin);	//Espera um input de stdin
@@ -75,6 +86,15 @@ int process_commands(char* user) {
 			i++;
 		}
 
+/*
+		pipe(pipe_fd);
+
+		close(1); //fecha stdout
+		dup2(pipe_fd[1], 1);
+
+*/
+
+
 		// Tenta executar o commando da shell
 		// em caso de não existir tenta correr com o execlp
 
@@ -91,9 +111,20 @@ int process_commands(char* user) {
 			cmd_ajuda();
 		} else if (strcmp(res[0],"exit") == 0) {
 			cmd_sair();
+		} else if (strcmp(res[0],"stat") == 0) {
+			cmd_stat();
 		} else {
 			cmd_usrbin(res, i);	
 		}
+
+/*		while(read(pipe_fd[0], buffer_c1, MAX_INPUT) != NULL) {
+			pthread_create(&ptid[0], NULL, stdout_writer, (void *)&buffer_c1);
+
+			pthread_join(ptid[0], NULL);
+
+		}
+*/
+
 		return 1;
 
 	} else { //Escreve no fifo o comando (seja ele qual for)
@@ -126,3 +157,15 @@ void init_pipe() {
 			exit(1);
 	}
 }
+
+void* stdout_writer(void * arg) {
+	char * buffer = (char *) arg;
+	char * buf = malloc(MAX_INPUT);
+
+	strncpy(buffer, buf, MAX_INPUT);
+	dup(0);
+
+	printf("%s\n", buf);
+	pthread_exit(NULL);
+}
+
