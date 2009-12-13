@@ -7,10 +7,10 @@ sosh.o: sosh.c
 	gcc -g -c sosh.c -Wall
 
 freq: freq_cmds.o readline.o freq.o
-	gcc -o freq freq.o readline.o freq_cmds.o -Wall
+	gcc -lpthread -o freq freq.o readline.o freq_cmds.o -Wall
 
 freq.o: freq.c
-	gcc -g -c freq.c -lpthread -Wall
+	gcc  -g -c freq.c -lpthread -Wall
 
 commands.o: commands.h commands.c
 	gcc -g -c commands.c -Wall
