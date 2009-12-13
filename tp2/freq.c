@@ -27,8 +27,8 @@ void* counter(void* fd_ptr) {
 	char buf[256];
 
 	while(1) {
-		n_bytes = readline(*fd, buf, 255);
-		if (n_bytes != 0) {
+		n_bytes = read(*fd, buf, 255);
+		if (n_bytes != NULL) {
 			printf("%s\n", buf);
 		}
 	}
@@ -47,6 +47,11 @@ int main(int argc, char *argv[], char* envp[]) {
 		//criar as threads
 		if(  pthread_create(&tid, NULL, counter, (void *)&fd) != 0) {
 			perror("pthread");
+			exit(1);
+		}
+
+		if(pthread_join(tid, NULL) != 0) {
+			perror("error joining thread");
 			exit(1);
 		}
 		/*
