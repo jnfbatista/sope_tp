@@ -7,4 +7,6 @@ void freq_count(char txt[], int letter[]);
 
 void freq_diplay(int letters[]);
 
+void freq_sort(int letters[]);
+
 #endif 

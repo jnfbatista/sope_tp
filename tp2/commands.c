@@ -138,3 +138,14 @@ int cmd_write_pipe(char buffer[]) {
 	
 }
 
+void cmd_stat() {
+	int fd; //inicializa o file descriptor
+
+	fd = open( CMD_PIPE, O_WRONLY);
+	if ( fd == -1) {
+		perror("Opening file");
+	}
+
+	write(fd, "stat", 4);
+
+}

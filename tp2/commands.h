@@ -13,6 +13,7 @@
 #define MAX_PATH 1024
 #define SEPARATOR "/"
 #define PIPE "/tmp/sosh.canal"
+#define CMD_PIPE "/tmp/sosh.cmd"
 
 /**
  * Executa o o commando who do UNIX
@@ -76,7 +77,11 @@ int cmd_usrbin(char* argv[], int argc);
  * Write the input commands to the fifo
  */
 int cmd_write_pipe(char buffer[]);
-	
+
+/**
+ * Gets the frequency stats from freq server
+ */
+void cmd_stat();
 
 #endif
 

@@ -30,3 +30,8 @@ void freq_diplay(int letters[]) {
 		i++;
 	}
 }
+
+void freq_sort(int letters[] ) {	
+
+}
+

@@ -12,6 +12,7 @@
 #include "freq_cmds.h"
 
 #define FREQ_PIPE "/tmp/sosh.canal"
+#define CMD_PIPE "/tmp/sosh.cmd"
 #define NTHREADS 3
 
 int letter_freq[24];

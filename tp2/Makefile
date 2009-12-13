@@ -20,8 +20,9 @@ readline.o: readline.h readline.c
 
 freq_cmds.o: freq_cmds.h freq_cmds.c
 	gcc -g -c freq_cmds.c -Wall
+
 edit:
-	vim -p sosh.c commands.h commands.c freq.c
+	vim -p sosh.c commands.* freq.c freq_cmds.* readline.*
 
 clean: 
 	rm *.o

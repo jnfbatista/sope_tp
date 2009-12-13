@@ -13,7 +13,6 @@
 
 #define VERSION "0.3"
 
-
 /**
  * Handler de um sinal (a ser usado com SIGINT) para
  * perguntar ao utilizador se deseja sair da consola
