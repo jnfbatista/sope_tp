@@ -10,7 +10,7 @@ freq: freq_cmds.o readline.o freq.o
 	gcc -o freq freq.o readline.o freq_cmds.o -Wall
 
 freq.o: freq.c
-	gcc -g -c freq.c -pthread -Wall
+	gcc -g -c freq.c -lpthread -Wall
 
 commands.o: commands.h commands.c
 	gcc -g -c commands.c -Wall
