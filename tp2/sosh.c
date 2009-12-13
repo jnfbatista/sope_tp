@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <semaphore.h>
+#include <pthread.h>
 
 #include "commands.h"
 

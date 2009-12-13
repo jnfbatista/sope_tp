@@ -6,11 +6,11 @@ sosh: commands.o sosh.o
 sosh.o: sosh.c
 	gcc -g -c sosh.c -Wall
 
-freq: readline.o freq.o
-	gcc -o freq freq.o readline.o -Wall
+freq: freq_cmds.o readline.o freq.o
+	gcc -o freq freq.o readline.o freq_cmds.o -Wall
 
 freq.o: freq.c
-	gcc -g -c freq.c -Wall
+	gcc -g -c freq.c -pthread -Wall
 
 commands.o: commands.h commands.c
 	gcc -g -c commands.c -Wall
@@ -18,6 +18,8 @@ commands.o: commands.h commands.c
 readline.o: readline.h readline.c
 	gcc -g -c readline.c -Wall
 
+freq_cmds.o: freq_cmds.h freq_cmds.c
+	gcc -g -c freq_cmds.c -Wall
 edit:
 	vim -p sosh.c commands.h commands.c freq.c
 
