@@ -27,10 +27,11 @@ void* counter(void* fd_ptr) {
 	char buf[256];
 
 	while(1) {
-		n_bytes = read(*fd, buf, 255);
-		if (n_bytes != NULL) {
-			printf("%s\n", buf);
+		while( read(*fd, buf, 255) != NULL) {
+	   		freq_count(buf, letter_freq);
+			freq_diplay(letter_freq);
 		}
+
 	}
 
 	return NULL;
@@ -54,14 +55,6 @@ int main(int argc, char *argv[], char* envp[]) {
 			perror("error joining thread");
 			exit(1);
 		}
-		/*
-		   while(1) {
-		   n_bytes = readline(fd, buf, 256);
-		   if (n_bytes != 0) {
-		   printf("%s\n", buf);
-		   }
-		   }
-		   close(fd);*/
 	}
 	/*
 	   freq_count(FREQ_PIPE, letter_freq);

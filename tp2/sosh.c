@@ -61,7 +61,7 @@ int process_commands(char* user) {
 	int pid;
 
 	printf("%s: ", user);
-	fgets( cmd, MAX_INPUT, stdin);	//Espera um input de stdin
+	fgets(cmd, MAX_INPUT, stdin);	//Espera um input de stdin
 
 	if(strcmp(cmd,"\n") == 0){
 		return 0;

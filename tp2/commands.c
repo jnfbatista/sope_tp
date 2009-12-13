@@ -134,7 +134,7 @@ int cmd_write_pipe(char buffer[]) {
 		perror("Opening file");
 	}
 
-	write(fd, buffer, sizeof(buffer));
+	write(fd, buffer, sizeof(buffer)*8);
 	
 }
 
